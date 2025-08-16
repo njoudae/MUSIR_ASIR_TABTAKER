@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Registration - English</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="face-api.min.js"></script>
+    <style>
+        body {
+            direction: ltr;
+            text-align: left;
+        }
+        
+        .register-container {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            position: relative;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #ffffff;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #ffffff;
+            font-size: 0.95rem;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            text-align: left;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #00d4ff;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        }
+        
+        /* Dropdown options styling */
+        .form-group select option {
+            background: #1a1a2e;
+            color: #ffffff;
+            padding: 12px;
+            font-size: 1rem;
+            border: none;
+        }
+        
+        .form-group select option:hover {
+            background: #00d4ff;
+            color: #1a1a2e;
+        }
+        
+        .form-group select option:checked {
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            color: #ffffff;
+            font-weight: 600;
+        }
+        
+        .photo-capture {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: block !important;
+        }
+        
+        .photo-capture video {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            background: #000;
+        }
+        
+        .photo-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .photo-controls .btn {
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .photo-preview {
+            min-height: 100px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+        }
+        
+        .photo-preview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+        }
+        
+        .btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            font-family: inherit;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .btn-full {
+            width: 100%;
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .message.success {
+            background: rgba(0, 255, 0, 0.1);
+            color: #00ff00;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+        }
+        
+        .message.error {
+            background: rgba(255, 0, 0, 0.1);
+            color: #ff4444;
+            border: 1px solid rgba(255, 0, 0, 0.3);
+        }
+        
+        @media (max-width: 480px) {
+            .register-container {
+                padding: 15px;
+            }
+            
+            .photo-controls {
+                flex-direction: column;
+            }
+            
+            .photo-controls .btn {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="header">
+            <button class="back-btn" onclick="goBack()">← Back</button>
+            <h2>Driver Registration</h2>
+        </div>
+        
+        <form id="register-form" autocomplete="off">
+            <div class="form-group">
+                <label for="reg-name">Full Name</label>
+                <input type="text" id="reg-name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="reg-national-id">National ID</label>
+                <input type="text" id="reg-national-id" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="reg-truck-number">Truck Number</label>
+                <input type="text" id="reg-truck-number" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="reg-cargo-type">Cargo Type</label>
+                <select id="reg-cargo-type" required>
+                    <option value="">Select cargo type</option>
+                    <option value="general">General Cargo</option>
+                    <option value="hazardous">Gas</option>
+                    <option value="refrigerated">Refrigerated</option>
+                    <option value="bulk">Live Animals</option>
+                    <option value="container">Containers</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Driver Photo</label>
+                <div class="photo-capture" id="reg-photo-capture">
+                    <video id="reg-video" autoplay muted></video>
+                    <canvas id="reg-canvas" style="display: none;"></canvas>
+                    <div class="photo-controls">
+                        <button type="button" class="btn btn-secondary" onclick="startCamera()">Start Camera</button>
+                        <button type="button" class="btn btn-primary" onclick="capturePhoto()">Capture Photo</button>
+                    </div>
+                    <div id="reg-photo-preview" class="photo-preview"></div>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-full">Register</button>
+        </form>
+    </div>
+
+    <script>
+        // Global variables
+        let currentStream = null;
+        let registrationPhoto = null;
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+        });
+
+        // Setup event listeners
+        function setupEventListeners() {
+            document.getElementById('register-form').addEventListener('submit', handleRegistration);
+        }
+
+        // Start camera
+        async function startCamera() {
+            stopCamera();
+            const video = document.getElementById('reg-video');
+            const photoCapture = document.getElementById('reg-photo-capture');
+            
+            if (!video || !photoCapture) return;
+            
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+                currentStream = stream;
+                video.style.display = 'block';
+                
+                // Ensure photo capture div remains visible
+                photoCapture.style.display = 'block';
+                
+                await new Promise((res) => video.onloadedmetadata = () => { video.play(); res(); });
+            } catch (error) {
+                console.error('Error starting camera:', error);
+                showMessage('Error starting camera.', 'error');
+            }
+        }
+
+        // Stop camera
+        function stopCamera() {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+                currentStream = null;
+            }
+            document.querySelectorAll('video').forEach(v => v.style.display = 'none');
+        }
+
+        // Capture photo
+        async function capturePhoto() {
+            const video = document.getElementById('reg-video');
+            const canvas = document.getElementById('reg-canvas');
+            const preview = document.getElementById('reg-photo-preview');
+            const photoCapture = document.getElementById('reg-photo-capture');
+            
+            if (!video || !canvas || !preview || !photoCapture) return;
+            if (!currentStream) return;
+
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0);
+
+            const photoData = canvas.toDataURL('image/jpeg', 0.8);
+            preview.innerHTML = `<img src="${photoData}" alt="Captured photo">`;
+
+            registrationPhoto = photoData;
+
+            // Ensure photo capture div remains visible
+            photoCapture.style.display = 'block';
+            
+            // Automatically stop the camera after taking a picture
+            stopCamera();
+            
+            showMessage('Photo captured!', 'success');
+        }
+
+        // Registration
+        async function handleRegistration(e) {
+            e.preventDefault();
+            const userData = {
+                name: document.getElementById('reg-name').value,
+                nationalId: document.getElementById('reg-national-id').value,
+                truckNumber: document.getElementById('reg-truck-number').value,
+                cargoType: document.getElementById('reg-cargo-type').value,
+                photo: registrationPhoto
+            };
+
+            if (!userData.photo) {
+                showMessage('Capture a photo before registering.', 'error');
+                return;
+            }
+
+            // Get existing data
+            let storedFaces = {};
+            try {
+                const storedUsers = localStorage.getItem('truckDrivers');
+                if (storedUsers) storedFaces = JSON.parse(storedUsers);
+            } catch (error) {
+                console.error('Error loading stored data:', error);
+            }
+
+            storedFaces[userData.nationalId] = userData;
+            localStorage.setItem('truckDrivers', JSON.stringify(storedFaces));
+            showMessage('Registration successful!', 'success');
+            e.target.reset();
+            document.getElementById('reg-photo-preview').innerHTML = '';
+            
+            // Redirect to main page after successful registration
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 2000);
+        }
+
+        // Show messages
+        function showMessage(message, type = 'success') {
+            const existing = document.querySelectorAll('.message');
+            existing.forEach(el => el.remove());
+
+            const el = document.createElement('div');
+            el.className = `message ${type}`;
+            el.textContent = message;
+
+            const container = document.querySelector('.register-container');
+            container.insertBefore(el, container.firstChild);
+
+            setTimeout(() => {
+                if (el.parentNode) el.remove();
+            }, 5000);
+        }
+
+        // Go back function
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html> 
