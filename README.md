@@ -2,6 +2,7 @@
 
 A mobile-style web application designed for truck drivers to securely request travel permits with face verification and real-time route mapping.
 
+demo: https://youtu.be/DCLFGaKeNeY
 ## Features
 
 ### 🔐 Secure Authentication
@@ -213,5 +214,6 @@ This project is open source and available under the MIT License.
 For technical support or feature requests, please create an issue in the project repository.
 
 ---
+
 
 **Note**: This application is designed for demonstration purposes. For production use, implement additional security measures and backend services as required by your organization's security policies. 
